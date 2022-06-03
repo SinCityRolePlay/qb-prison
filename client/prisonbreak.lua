@@ -102,12 +102,30 @@ RegisterNetEvent('prison:client:SetLockDown', function(isLockdown)
 end)
 
 RegisterNetEvent('prison:client:PrisonBreakAlert', function()
-    local coords = vector3(Config.Locations["middle"].coords.x, Config.Locations["middle"].coords.y, Config.Locations["middle"].coords.z)
-    local alertData = {title = "New Call", coords = {x = coords.x, y = coords.y, z = coords.z}, description = "Prison outbreak"}
-    TriggerEvent("qb-phone:client:addPoliceAlert", alertData)
-    TriggerEvent('police:client:policeAlert', coords, "Prison outbreak")
+    --local coords = vector3(Config.Locations["middle"].coords.x, Config.Locations["middle"].coords.y, Config.Locations["middle"].coords.z)
+    --local alertData = {title = "New Call", coords = {x = coords.x, y = coords.y, z = coords.z}, description = "Prison outbreak"}
+    --TriggerEvent("qb-phone:client:addPoliceAlert", alertData)
+    --TriggerEvent('police:client:policeAlert', coords, "Prison outbreak")
+    local data = exports['cd_dispatch']:GetPlayerInfo()
+    TriggerServerEvent('cd_dispatch:AddNotification', {
+        job_table = {'police'}, 
+        coords = data.coords,
+        title = '10-31 - Prison outbreak',
+        message = 'Possible prison break at'..data.street..'.', 
+        flash = 1,
+        unique_id = tostring(math.random(0000000,9999999)),
+        blip = {
+            sprite = 58, 
+            scale = 1.2, 
+            colour = 59,
+            flashes = true, 
+            text = '10-31 - Prison outbreak',
+            time = (5*60*1000),
+            sound = 1,
+        }
+    })
 
-    local BreakBlip = AddBlipForCoord(coords.x, coords.y, coords.z)
+    --[[local BreakBlip = AddBlipForCoord(coords.x, coords.y, coords.z)
     TriggerServerEvent('prison:server:JailAlarm')
     SetBlipSprite(BreakBlip , 161)
     SetBlipScale(BreakBlip , 3.0)
@@ -121,7 +139,7 @@ RegisterNetEvent('prison:client:PrisonBreakAlert', function()
     Wait(100)
     PlaySoundFrontend( -1, "Beep_Red", "DLC_HEIST_HACKING_SNAKE_SOUNDS", 1 )
     Wait((1000 * 60 * 5))
-    RemoveBlip(BreakBlip)
+    RemoveBlip(BreakBlip)]]
 end)
 
 RegisterNetEvent('prison:client:SetGateHit', function(key, isHit)
